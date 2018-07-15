@@ -14,6 +14,7 @@ class DataFrame:
         self.__destination_address = destination_address
         self.__source_address = source_address
         self.__payload = payload
+        self.__crc = ""
 
     def set__crc(self, crc):
         self.__crc = crc
