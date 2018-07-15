@@ -61,9 +61,8 @@ class Conversion:
 
     @staticmethod
     def ip_to_binary(ip):
-        ip = ip.split(".")
+        ip = ip.split('.')
         binary = ""
         for num in ip:
             binary += Conversion.decimal_to_binary(int(num))
-
         return binary

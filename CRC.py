@@ -1,6 +1,6 @@
 class CRC:
     """description of class"""
-
+    @staticmethod
     def crc(msg):
         """Cyclic Redundancy Check
         Generates an error detecting code based on an inputted message
@@ -19,9 +19,9 @@ class CRC:
 
         """
         # Append the code to the message. If no code is given, default to '000'
-        code = '000'
-        div = '11000000000000101'
 
+        div = '11000000000000101'
+        code = (len(div)-1) * '0'
         msg = msg + code
 
         msg = list(msg)
