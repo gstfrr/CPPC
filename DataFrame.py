@@ -7,13 +7,15 @@ class DataFrame:
     __payload = None
     __crc = None
 
-    def __init__(self, length, sequence, destination_address, source_address, payload, crc):
+    def __init__(self, length, sequence, destination_address, source_address, payload):
         self.__delimiter = "01111110"
         self.__length = length
         self.__sequence = sequence
         self.__destination_address = destination_address
         self.__source_address = source_address
         self.__payload = payload
+
+    def set__crc(self, crc):
         self.__crc = crc
 
     def last_bit_sequence(self):
