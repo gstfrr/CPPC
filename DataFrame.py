@@ -1,3 +1,9 @@
+DELEMITER_SIZE = 8
+LENGHT_SIZE = 8
+SEQUENCE_SIZE = 8
+DESTINATION_ADDRESS_SIZE = 32
+SOURCE_ADDRESS_SIZE = 32
+CRC_SIZE = 16
 class DataFrame:
     __delimiter = None
     __length = None
@@ -35,3 +41,17 @@ class DataFrame:
         frame += self.__payload
         frame += self.__crc
         return frame
+
+    @staticmethod
+    def string_to_DataFrame(string):
+        aux = len(string)
+        delimiter = string[0:7]
+        length = string[8:15]
+        sequence = string[16:23]
+        destination_address = string[24:55]
+        source_address = string[56:87]
+        payload = string[88:aux - 16]
+        crc = string[aux-16:aux]
+        dataFrame = DataFrame(delimiter,length,sequence,destination_address,source_address,payload)
+        dataFrame.set__crc(crc)
+        return dataFrame
