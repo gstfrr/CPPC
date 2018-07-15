@@ -42,6 +42,16 @@ class DataFrame:
         frame += self.__crc
         return frame
 
+    def return_data_frame_to_crc(self):
+        frame = ''
+        frame += self.__length
+        frame += self.__sequence
+        frame += self.__destination_address
+        frame += self.__source_address
+        frame += self.__payload
+        frame += self.__crc
+        return frame
+
     @staticmethod
     def string_to_DataFrame(string):
         aux = len(string)
