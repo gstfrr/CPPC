@@ -26,6 +26,9 @@ def main():
 
     usuario.send_message(mensagem, HOST_DESTINATION)
 
+
+
+
     # print("MENSAGEM ENVIADA: ", message)
 
     # def strtobin(input):
