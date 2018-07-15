@@ -1,10 +1,12 @@
 import socket
 
-HOST = '177.105.60.117'  # Symbolic name meaning all available interfaces
+HOST_SERVER = socket.getfqdn(socket.gethostbyname(socket.gethostname()))
 PORT = 22222  # Arbitrary non-privileged port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((HOST, PORT))
+s.bind((HOST_SERVER, PORT))
 s.listen(1)
+
+print('Servidor ', HOST_SERVER, ' escutando na porta ', PORT)
 
 #recebe mensagem
 while 1:
