@@ -19,4 +19,5 @@ while 1:
 
     #responde
     conn.sendall("valeu".encode())
-    conn.close()
+
+conn.close()
