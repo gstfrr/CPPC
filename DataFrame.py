@@ -49,7 +49,6 @@ class DataFrame:
         frame += self.__destination_address
         frame += self.__source_address
         frame += self.__payload
-        frame += self.__crc
         return frame
 
     @staticmethod
