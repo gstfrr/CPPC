@@ -3,7 +3,7 @@ import socket
 
 class MySocket:
 
-    def __init__(self, host, port=45454):
+    def __init__(self, host=socket.getfqdn(socket.gethostbyname(socket.gethostname())), port=45454):
         self.__host = host
         self.__port = port
 
@@ -14,6 +14,9 @@ class MySocket:
 
     def send(self, msg):
         s = self.initsocket()
+
+        print(self.__host,self.__port)
+
         s.sendall(msg.encode())
         data = s.recv(1024)
         s.close()
@@ -24,7 +27,7 @@ class MySocket:
         s.bind((self.__host, self.__port))
         s.listen(1)
 
-
+        print('Servidor ', self.__host, ' escutando na porta ', self.__port)
 
         # recebe mensagem
         while 1:
@@ -35,8 +38,5 @@ class MySocket:
             if not data:
                 break
             print('servidor recebeu', repr(data))
-
-            # responde
-            conn.sendall("valeu".encode())
             conn.close()
             return repr(data)
