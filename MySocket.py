@@ -24,12 +24,13 @@ class MySocket:
         s.bind((self.__host, self.__port))
         s.listen(1)
 
-        # recebe conexao
-        conn, addr = s.accept()
-        print('Connected by', addr)
+
 
         # recebe mensagem
         while 1:
+            # recebe conexao
+            conn, addr = s.accept()
+            print('Connected by', addr)
             data = conn.recv(1024)
             if not data:
                 break
