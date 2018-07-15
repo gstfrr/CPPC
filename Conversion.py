@@ -64,6 +64,6 @@ class Conversion:
         ip = ip.split(".")
         binary = ""
         for num in ip:
-            binary += Conversion.decimal_to_binary(num)
+            binary += Conversion.decimal_to_binary(int(num))
 
         return binary
