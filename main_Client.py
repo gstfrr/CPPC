@@ -5,7 +5,6 @@ import socket
 
 HOST_SOURCE = socket.getfqdn(socket.gethostbyname(socket.gethostname()))
 HOST_DESTINATION = HOST_SOURCE
-PORT = 5555
 
 
 def main():
@@ -25,9 +24,6 @@ def main():
     usuario = User(HOST_SOURCE)
 
     usuario.send_message(mensagem, HOST_DESTINATION)
-
-
-
 
     # print("MENSAGEM ENVIADA: ", message)
 

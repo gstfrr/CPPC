@@ -1,7 +1,7 @@
 import socket
 
 HOST_SERVER = socket.getfqdn(socket.gethostbyname(socket.gethostname()))
-PORT = 22222  # Arbitrary non-privileged port
+PORT = 45454  # Arbitrary non-privileged port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST_SERVER, PORT))
 s.listen(1)

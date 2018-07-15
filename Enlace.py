@@ -1,7 +1,7 @@
 from DataFrame import DataFrame
 from Conversion import Conversion
 from MySocket import MySocket
-
+from CRC import CRC
 
 class Enlace:
 
@@ -44,10 +44,10 @@ class Enlace:
             payload)
 
 
-        # MyCRC = calculacrc(frame.return_data_frame())
-        # frame.set__crc(MyCRC)
+        MyCRC = CRC.crc(frame.return_data_frame())
+        frame.set__crc(MyCRC)
 
-        print(frame.return_data_frame())
+        print('FRAME COM CRC',frame.return_data_frame())
 
         socket = MySocket(destination_address)
         socket.send(frame.return_data_frame())

@@ -32,6 +32,6 @@ class MySocket:
             conn, addr = s.accept()
             data = conn.recv(1024)
             if not data:
-                break
+                continue
             conn.close()
             return repr(data)
