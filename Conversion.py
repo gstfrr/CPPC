@@ -58,3 +58,12 @@ class Conversion:
     def string_to_binary(string):
         string = Conversion.string_to_hexadecimal(string)
         return Conversion.hexadecimal_to_binary(string)
+
+    @staticmethod
+    def ip_to_binary(ip):
+        ip = ip.split(".")
+        binary = ""
+        for num in ip:
+            binary += Conversion.decimal_to_binary(num)
+
+        return binary
