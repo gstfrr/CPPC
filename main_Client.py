@@ -4,7 +4,7 @@ from User import User
 import socket
 
 HOST_SOURCE = socket.getfqdn(socket.gethostbyname(socket.gethostname()))
-HOST_DESTINATION = '177.105.2.125'
+HOST_DESTINATION = HOST_SOURCE
 PORT = 5555
 
 
@@ -22,7 +22,7 @@ def main():
                "web que facilita a compreensao e visualizacao " \
                "de dados, resultados e analises."
 
-    usuario = User(HOST_SOURCE, PORT)
+    usuario = User(HOST_SOURCE)
 
     usuario.send_message(mensagem, HOST_DESTINATION)
 
