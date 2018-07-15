@@ -1,4 +1,4 @@
-import DataFrame
+from DataFrame import DataFrame
 from Conversion import Conversion
 import MySocket
 
@@ -15,24 +15,35 @@ class Enlace():
     @staticmethod
     def data_indication(destination_address, source_address, l_sdu):
 
+        #Delimitador já é inserido no quadro
+
+        # comprimento do payload
+        length = Conversion.decimal_to_binary(len(l_sdu))
+
+        # campo de sequencia????
         sequence = '00000000'
 
-        destination_address_frame = Conversion.string_to_binary(destination_address)
+        # destino do quadro
+        destination_address_frame = Conversion.ip_to_binary(destination_address)
 
-        source_address_frame = Conversion.string_to_binary(source_address)
+        # origem do quadro
+        source_address_frame = Conversion.ip_to_binary(source_address)
 
+        #dados convertidos
         payload = Conversion.string_to_binary(l_sdu)
-
-        length = len(payload)
-
-        crc = '1111111111111111'
 
         frame = DataFrame(
             length,
             sequence,
             destination_address_frame,
             source_address_frame,
-            payload,
-            crc)
+            payload)
+
+
+        # MyCRC = calculacrc(frame.return_data_frame())
+        # frame.set__crc(MyCRC)
+
+        print(frame.return_data_frame())
+
 
 
