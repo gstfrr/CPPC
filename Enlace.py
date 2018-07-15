@@ -1,16 +1,19 @@
 from DataFrame import DataFrame
 from Conversion import Conversion
-import MySocket
+from MySocket import MySocket
 
 
-class Enlace():
+class Enlace:
 
     def __init__(self, address):
         __destination_address = address[0]
         __source_address = address[1]
 
-    def data_request(self, destination_address, l_sdu):
-        pass
+    @staticmethod
+    def data_request():
+        socket = MySocket()
+        resposta = socket.receive()
+        print('RESPOSTA DO CLIENTE:', resposta)
 
     @staticmethod
     def data_indication(destination_address, source_address, l_sdu):
@@ -20,7 +23,8 @@ class Enlace():
         # comprimento do payload
         length = Conversion.decimal_to_binary(len(l_sdu))
 
-        # campo de sequencia????
+        # campo de sequencia TODO
+        #          SEQ----ACK
         sequence = '00000000'
 
         # destino do quadro
@@ -44,6 +48,13 @@ class Enlace():
         # frame.set__crc(MyCRC)
 
         print(frame.return_data_frame())
+
+        socket = MySocket(destination_address)
+        socket.send(frame.return_data_frame())
+
+
+
+
 
 
 
