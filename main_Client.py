@@ -1,4 +1,3 @@
-# from MySocket import MySocket
 from User import User
 
 import socket
