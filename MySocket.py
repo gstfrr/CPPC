@@ -3,13 +3,16 @@ import socket
 
 class MySocket:
 
-    def __init__(self, host=socket.getfqdn(socket.gethostbyname(socket.gethostname())), port=45454):
+    __port = 45454
+
+    def __init__(self, host=socket.getfqdn(socket.gethostbyname(socket.gethostname())), port=__port):
         self.__host = host
         self.__port = port
 
     @staticmethod
     def initsocket():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
         return s
 
     def send(self, msg):
@@ -34,7 +37,8 @@ class MySocket:
             if not data:
                 continue
             conn.close()
-            received.append(repr(data))
+            x = data.decode('ascii')
+            received.append(x)
 
         received.pop()
-        return (received)
+        return received
