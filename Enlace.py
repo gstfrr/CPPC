@@ -3,6 +3,7 @@ from Conversion import Conversion
 from MySocket import MySocket
 from CRC import CRC
 
+
 class Enlace:
 
     def __init__(self, address):
@@ -12,13 +13,20 @@ class Enlace:
     @staticmethod
     def data_request():
         socket = MySocket()
-        resposta = socket.receive()
-        print('RESPOSTA DO CLIENTE:', resposta)
+        respostas = socket.receive()
+        mensagem = ''
+        for r in respostas:
+            r = r[1:]
+            r2 = DataFrame.string_to_DataFrame(r)
+            r2_bin = r2.get_payload()
+            mensagem += Conversion.binary_to_string(r2_bin)
+
+        return (mensagem)
 
     @staticmethod
     def data_indication(destination_address, source_address, l_sdu):
 
-        #Delimitador já é inserido no quadro
+        # Delimitador já é inserido no quadro
 
         # comprimento do payload
         length = Conversion.decimal_to_binary(len(l_sdu))
@@ -33,7 +41,7 @@ class Enlace:
         # origem do quadro
         source_address_frame = Conversion.ip_to_binary(source_address)
 
-        #dados convertidos
+        # dados convertidos
         payload = Conversion.string_to_binary(l_sdu)
 
         frame = DataFrame(
@@ -43,18 +51,12 @@ class Enlace:
             source_address_frame,
             payload)
 
-
         MyCRC = CRC.crc(frame.return_data_frame())
         frame.set__crc(MyCRC)
 
-        print('FRAME COM CRC',frame.return_data_frame())
-
         socket = MySocket(destination_address)
-        socket.send(frame.return_data_frame())
-
-
-
-
-
-
-
+        if l_sdu == 'FIM':
+            socket.send('#')
+        else:
+            print(frame.return_data_frame())
+            socket.send(frame.return_data_frame())

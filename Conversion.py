@@ -39,11 +39,17 @@ class Conversion:
 
     @staticmethod
     def binary_to_hexadecimal(binary):
-        return 0
+        return hex(int(binary, 2))
 
     @staticmethod
-    def hexadecimal_to_decimal(hexadecimal):
-        return 0
+    def hexadecimal_to_string(hexadecimal):
+        return bytearray.fromhex(hexadecimal).decode('ascii')
+
+    @staticmethod
+    def binary_to_string(bin):
+        hex = Conversion.binary_to_hexadecimal(bin)
+        s = Conversion.hexadecimal_to_string(hex[2:])
+        return s
 
     @staticmethod
     def hexadecimal_to_binary(hexadecimal):

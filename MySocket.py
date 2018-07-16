@@ -15,8 +15,6 @@ class MySocket:
     def send(self, msg):
         s = self.initsocket()
 
-        print(self.__host,self.__port)
-
         s.connect((self.__host, self.__port))
         s.sendall(msg.encode())
         # data = s.recv(1024)
@@ -26,12 +24,17 @@ class MySocket:
         s = self.initsocket()
         s.bind((self.__host, self.__port))
         s.listen(1)
+        data = ''
+        received = []
         # recebe mensagem
-        while 1:
+        while data != b'#':
             # recebe conexao
             conn, addr = s.accept()
-            data = conn.recv(1024)
+            data = conn.recv(3000)
             if not data:
                 continue
             conn.close()
-            return repr(data)
+            received.append(repr(data))
+
+        received.pop()
+        return (received)

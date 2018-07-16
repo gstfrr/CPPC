@@ -15,11 +15,9 @@ class User:
 
         for segment in listpackets:
             Enlace.data_indication(destination_address, self.__host, segment)
-
-            self.receive_message()
-
+        Enlace.data_indication(destination_address, self.__host, 'FIM')
 
     def receive_message(self):
-        Enlace.data_request()
+        message = Enlace.data_request()
 
-        pass
+        print(message)
