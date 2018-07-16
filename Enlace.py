@@ -2,6 +2,7 @@ from DataFrame import DataFrame
 from Conversion import Conversion
 from MySocket import MySocket
 from CRC import CRC
+from Fisica import Fisica
 
 
 class Enlace:
@@ -14,12 +15,22 @@ class Enlace:
     def data_request():
         socket = MySocket()
         respostas = socket.receive()
+
         mensagem = ''
         for r in respostas:
-            r = r[1:]
+
             r2 = DataFrame.string_to_DataFrame(r)
-            r2_bin = r2.get_payload()
-            mensagem += Conversion.binary_to_string(r2_bin)
+
+            r2_payload_bin = r2.get_payload()
+            r2_crc_recebido = r2.get_crc()
+            crc_novo = CRC.crc(r2.return_data_frame_to_crc())
+
+            if crc_novo == r2_crc_recebido:
+                pass
+
+            mensagem += Conversion.binary_to_string(r2_payload_bin)
+
+
 
         return (mensagem)
 
@@ -51,12 +62,17 @@ class Enlace:
             source_address_frame,
             payload)
 
-        MyCRC = CRC.crc(frame.return_data_frame())
+        MyCRC = CRC.crc(frame.return_data_frame_to_crc())
         frame.set__crc(MyCRC)
+
+        frame_str = frame.return_data_frame()
 
         socket = MySocket(destination_address)
         if l_sdu == 'FIM':
             socket.send('#')
         else:
-            print(frame.return_data_frame())
-            socket.send(frame.return_data_frame())
+            print('FRAME ORIGINAL:', str(len(l_sdu)), frame_str)
+
+            # Adicionar ruido ao quadro
+            # frame_str = Fisica.add_noise(frame_str)
+            socket.send(frame_str)
