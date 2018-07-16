@@ -3,7 +3,7 @@ import random
 
 
 class Fisica:
-    __TAXA = 0.3
+    __TAXA = 0.1
 
     @staticmethod
     def add_noise(msg):
