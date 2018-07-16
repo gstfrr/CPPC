@@ -28,17 +28,13 @@ class MySocket:
         s.bind((self.__host, self.__port))
         s.listen(1)
         data = ''
-        received = []
-        # recebe mensagem
-        while data != b'#':
-            # recebe conexao
-            conn, addr = s.accept()
-            data = conn.recv(3000)
-            if not data:
-                continue
-            conn.close()
-            x = data.decode('ascii')
-            received.append(x)
-
-        received.pop()
-        return received
+        received = ''
+        # recebe conexao
+        conn, addr = s.accept()
+        data = conn.recv(3000)
+        # if not data:
+        #     pass
+        conn.close()
+        x = data.decode('ascii')
+        s.close()
+        return x
