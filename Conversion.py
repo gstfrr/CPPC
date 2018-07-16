@@ -72,3 +72,18 @@ class Conversion:
         for num in ip:
             binary += Conversion.decimal_to_binary(int(num))
         return binary
+
+    @staticmethod
+    def binary_to_ip(bin):
+        a = bin[0:8]
+        b = bin[8:16]
+        c = bin[16:24]
+        d = bin[24:32]
+
+        A = str(Conversion.binary_to_decimal(a))
+        B = str(Conversion.binary_to_decimal(b))
+        C = str(Conversion.binary_to_decimal(c))
+        D = str(Conversion.binary_to_decimal(d))
+
+        ip = A + '.' + B + '.' + C + '.' + D
+        return ip
