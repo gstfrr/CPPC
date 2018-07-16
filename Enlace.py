@@ -1,3 +1,6 @@
+import random
+
+from ConfirmationFrame import ConfirmationFrame
 from DataFrame import DataFrame
 from Conversion import Conversion
 from MySocket import MySocket
@@ -11,30 +14,44 @@ class Enlace:
         __destination_address = address[0]
         __source_address = address[1]
 
-    @staticmethod
+    @staticmethod  ## Servidor que recebe o frame e responde com o ACK
     def data_request():
-        socket = MySocket()
-        respostas = socket.receive()
+        socket_receber = MySocket()
+        respostas = socket_receber.receive()
 
         mensagem = ''
-        for r in respostas:
+        r = respostas
 
-            r2 = DataFrame.string_to_DataFrame(r)
+        r2 = DataFrame.string_to_DataFrame(r)
 
-            r2_payload_bin = r2.get_payload()
-            r2_crc_recebido = r2.get_crc()
-            crc_novo = CRC.crc(r2.return_data_frame_to_crc())
+        r2_payload_bin = r2.get_payload()
+        r2_crc_recebido = r2.get_crc()
+        crc_novo = CRC.crc(r2.return_data_frame_to_crc())
 
-            if crc_novo == r2_crc_recebido:
-                pass
+        source_bin = r2.get_destination_address()
+
+        destination_bin = r2.get_source_address()
+        destination = Conversion.binary_to_ip(destination_bin)
+
+        sequence = r2.first_bit_sequence()
+        if crc_novo != r2_crc_recebido:
+            sequence += '0000000'
+            # manda quadro de confirmação com ack = 0
+        else:
+            sequence += '0000001'
 
             mensagem += Conversion.binary_to_string(r2_payload_bin)
 
+        ack_frame = ConfirmationFrame(sequence, destination_bin, source_bin)
 
+        print('CONFIRMATION FRAME:   ', ack_frame.return_confirmation_frame())
+
+        ack_socket = MySocket(destination)
+        ack_socket.send(ack_frame.return_confirmation_frame())
 
         return (mensagem)
 
-    @staticmethod
+    @staticmethod  ## Cliente que manda
     def data_indication(destination_address, source_address, l_sdu):
 
         # Delimitador já é inserido no quadro
@@ -55,6 +72,7 @@ class Enlace:
         # dados convertidos
         payload = Conversion.string_to_binary(l_sdu)
 
+        # cria o frame
         frame = DataFrame(
             length,
             sequence,
@@ -62,17 +80,25 @@ class Enlace:
             source_address_frame,
             payload)
 
+        # Calcula o crc
         MyCRC = CRC.crc(frame.return_data_frame_to_crc())
         frame.set__crc(MyCRC)
 
+        # cria a string para enviar
         frame_str = frame.return_data_frame()
 
-        socket = MySocket(destination_address)
+        socket_envio = MySocket(destination_address)
         if l_sdu == 'FIM':
-            socket.send('#')
+            socket_envio.send('#')
         else:
-            print('FRAME ORIGINAL:', str(len(l_sdu)), frame_str)
-
             # Adicionar ruido ao quadro
-            # frame_str = Fisica.add_noise(frame_str)
-            socket.send(frame_str)
+            # if random.randrange(0, 1):
+            #     frame_str = Fisica.add_noise(frame_str)
+
+            # ENVIA!!!
+            socket_envio.send(frame_str)
+
+            receive_ack_socket = MySocket()
+            got_it = receive_ack_socket.receive()
+
+            print(got_it)
