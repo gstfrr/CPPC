@@ -3,19 +3,18 @@ import random
 
 
 class Fisica:
-    __TAXA = 0.1
+    __TAXA = 0.3
 
     @staticmethod
     def add_noise(msg):
         size = len(msg)
-        quantidade = math.ceil(Fisica.__TAXA* size)
+        quantidade = math.ceil(Fisica.__TAXA * size)
 
         for i in range(quantidade):
             pos = random.randrange(0, len(msg))
             l = list(msg)
             l[pos] = Fisica.invert(l[pos])
             msg = ''.join(l)
-
 
         return msg
 
