@@ -19,6 +19,21 @@ class DataFrame:
     def set__crc(self, crc):
         self.__crc = crc
 
+    def get_crc(self):
+        return self.__crc
+
+    def get_length(self):
+        return self.__length
+
+    def get_sequence(self):
+        return self.__sequence
+
+    def get_source_address(self):
+        return self.__source_address
+
+    def get_destination_address(self):
+        return self.__destination_address
+
     def last_bit_sequence(self):
         return self.__sequence[7]
 
@@ -49,11 +64,11 @@ class DataFrame:
     def string_to_DataFrame(string):
         aux = len(string)
         delimiter = string[0:8]
-        length = string[9:16]
-        sequence = string[17:24]
-        destination_address = string[25:56]
-        source_address = string[57:88]
-        payload = string[89:aux - 16 - 1]
+        length = string[8:16]
+        sequence = string[16:24]
+        destination_address = string[24:56]
+        source_address = string[56:88]
+        payload = string[88:aux - 16]
         crc = string[aux - 16:aux]
         dataFrame = DataFrame(length, sequence, destination_address, source_address, payload)
         dataFrame.set__crc(crc)
