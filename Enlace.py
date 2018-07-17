@@ -38,12 +38,15 @@ class Enlace:
             destination_bin = r2.get_source_address()
             destination = Conversion.binary_to_ip(destination_bin)
 
+            n_ack = 0
             sequence = r2.first_bit_sequence()
             if crc_novo != r2_crc_recebido:
                 sequence += '0000000'
+                n_ack = 0
                 # manda quadro de confirmação com ack = 0
             else:
                 sequence += '0000001'
+                n_ack = 1
 
                 mensagem += Conversion.binary_to_string(r2_payload_bin)
                 print('MENSAGEM RECEBIDA:', Conversion.binary_to_string(r2_payload_bin))
@@ -58,7 +61,7 @@ class Enlace:
             ack_socket = MySocketTCP(destination)
             ack_socket.send(ack_frame.return_confirmation_frame())
 
-            print('CONFIRMATION FRAME ENVIADO')
+            print('CONFIRMATION FRAME ENVIADO COM ACK = ', n_ack)
 
         return(mensagem)
 
@@ -120,4 +123,8 @@ class Enlace:
                 receive_ack_socket = MySocketTCP()
                 got_it = receive_ack_socket.receive()
 
-                print('ACK RECEBIDO')
+                OK = ConfirmationFrame.string_to_ConfirmationFrame(got_it)
+
+                ACK = OK.last_bit_sequence()
+
+                print('ACK RECEBIDO: ', ACK)

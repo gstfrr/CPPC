@@ -23,3 +23,13 @@ class ConfirmationFrame:
         frame += self.__destination_address
         frame += self.__source_address
         return frame
+
+    @staticmethod
+    def string_to_ConfirmationFrame(string):
+        delimiter = string[0:8]
+        sequence = string[8:16]
+        destination_address = string[16:48]
+        source_address = string[48:80]
+        confirmationFrame = ConfirmationFrame(sequence, destination_address, source_address)
+
+        return confirmationFrame
