@@ -2,7 +2,7 @@ from User import User
 
 import socket
 
-HOST_SOURCE = socket.getfqdn(socket.gethostbyname(socket.gethostname()))
+HOST_SOURCE = '127.0.0.1'
 HOST_DESTINATION = HOST_SOURCE
 
 
