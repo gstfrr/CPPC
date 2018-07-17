@@ -20,9 +20,9 @@ def main():
                "web que facilita a compreensao e visualizacao " \
                "de dados, resultados e analises."
 
-    usuario = User(HOST_SOURCE)
+    cliente = User(HOST_SOURCE)
 
-    usuario.send_message(mensagem, HOST_DESTINATION)
+    cliente.send_message(mensagem, HOST_DESTINATION)
 
 
 if __name__ == '__main__':

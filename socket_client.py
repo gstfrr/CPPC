@@ -9,12 +9,11 @@ s.connect((HOST_SERVER, PORT))
 # mensagem para enviar
 msg = 'Hello, bruno faz a porra do crc'
 
-#enviar a mensagem
+# enviar a mensagem
 s.sendall(msg.encode())
 
-#receber a resposta
+# receber a resposta
 data = s.recv(1024)
 print('CLiente recebeu: ', repr(data))
 
 s.close()
-

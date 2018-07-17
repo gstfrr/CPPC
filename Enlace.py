@@ -3,7 +3,7 @@ import random
 from ConfirmationFrame import ConfirmationFrame
 from DataFrame import DataFrame
 from Conversion import Conversion
-from MySocket import MySocket
+from MySocketTCP import MySocketTCP
 from CRC import CRC
 from Fisica import Fisica
 
@@ -16,89 +16,108 @@ class Enlace:
 
     @staticmethod  ## Servidor que recebe o frame e responde com o ACK
     def data_request():
-        socket_receber = MySocket()
-        respostas = socket_receber.receive()
-
         mensagem = ''
-        r = respostas
 
-        r2 = DataFrame.string_to_DataFrame(r)
+        while True:
 
-        r2_payload_bin = r2.get_payload()
-        r2_crc_recebido = r2.get_crc()
-        crc_novo = CRC.crc(r2.return_data_frame_to_crc())
+            socket_receber = MySocketTCP('127.0.0.1')
+            resposta = socket_receber.receive()
 
-        source_bin = r2.get_destination_address()
+            if resposta == '#':
+                print('CLIENTE DESCONECTOU')
+                break
 
-        destination_bin = r2.get_source_address()
-        destination = Conversion.binary_to_ip(destination_bin)
+            r2 = DataFrame.string_to_DataFrame(resposta)
 
-        sequence = r2.first_bit_sequence()
-        if crc_novo != r2_crc_recebido:
-            sequence += '0000000'
-            # manda quadro de confirmação com ack = 0
-        else:
-            sequence += '0000001'
+            r2_payload_bin = r2.get_payload()
+            r2_crc_recebido = r2.get_crc()
+            crc_novo = CRC.crc(r2.return_data_frame_to_crc())
 
-            mensagem += Conversion.binary_to_string(r2_payload_bin)
+            source_bin = r2.get_destination_address()
 
-        ack_frame = ConfirmationFrame(sequence, destination_bin, source_bin)
+            destination_bin = r2.get_source_address()
+            destination = Conversion.binary_to_ip(destination_bin)
 
-        print('CONFIRMATION FRAME:   ', ack_frame.return_confirmation_frame())
+            sequence = r2.first_bit_sequence()
+            if crc_novo != r2_crc_recebido:
+                sequence += '0000000'
+                # manda quadro de confirmação com ack = 0
+            else:
+                sequence += '0000001'
 
-        ack_socket = MySocket(destination)
-        ack_socket.send(ack_frame.return_confirmation_frame())
+                mensagem += Conversion.binary_to_string(r2_payload_bin)
+                print('MENSAGEM RECEBIDA:', Conversion.binary_to_string(r2_payload_bin))
+                print('FRAME OK')
 
-        return (mensagem)
+            ack_frame = ConfirmationFrame(sequence, destination_bin, source_bin)
+
+
+
+            print('ENVIANDO CONFIRMATION FRAME:   ', ack_frame.return_confirmation_frame())
+
+            ack_socket = MySocketTCP(destination)
+            ack_socket.send(ack_frame.return_confirmation_frame())
+
+            print('CONFIRMATION FRAME ENVIADO')
+
+        return(mensagem)
 
     @staticmethod  ## Cliente que manda
     def data_indication(destination_address, source_address, l_sdu):
+        for segment in l_sdu:
 
-        # Delimitador já é inserido no quadro
+            print('MENSAGEM A SER ENVIADA:   ', segment)
 
-        # comprimento do payload
-        length = Conversion.decimal_to_binary(len(l_sdu))
+            # Delimitador já é inserido no quadro
 
-        # campo de sequencia TODO
-        #          SEQ----ACK
-        sequence = '00000000'
+            # comprimento do payload
+            length = Conversion.decimal_to_binary(len(segment))
 
-        # destino do quadro
-        destination_address_frame = Conversion.ip_to_binary(destination_address)
+            # campo de sequencia TODO
+            #          SEQ----ACK
+            sequence = '00000000'
 
-        # origem do quadro
-        source_address_frame = Conversion.ip_to_binary(source_address)
+            # destino do quadro
+            destination_address_frame = Conversion.ip_to_binary(destination_address)
 
-        # dados convertidos
-        payload = Conversion.string_to_binary(l_sdu)
+            # origem do quadro
+            source_address_frame = Conversion.ip_to_binary(source_address)
 
-        # cria o frame
-        frame = DataFrame(
-            length,
-            sequence,
-            destination_address_frame,
-            source_address_frame,
-            payload)
+            # dados convertidos
+            payload = Conversion.string_to_binary(segment)
 
-        # Calcula o crc
-        MyCRC = CRC.crc(frame.return_data_frame_to_crc())
-        frame.set__crc(MyCRC)
+            # cria o frame
+            frame = DataFrame(
+                length,
+                sequence,
+                destination_address_frame,
+                source_address_frame,
+                payload)
 
-        # cria a string para enviar
-        frame_str = frame.return_data_frame()
+            # Calcula o crc
+            MyCRC = CRC.crc(frame.return_data_frame_to_crc())
+            frame.set__crc(MyCRC)
 
-        socket_envio = MySocket(destination_address)
-        if l_sdu == 'FIM':
-            socket_envio.send('#')
-        else:
-            # Adicionar ruido ao quadro
-            # if random.randrange(0, 1):
-            #     frame_str = Fisica.add_noise(frame_str)
+            # cria a string para enviar
+            frame_str = frame.return_data_frame()
 
-            # ENVIA!!!
-            socket_envio.send(frame_str)
+            socket_envio = MySocketTCP(destination_address)
 
-            receive_ack_socket = MySocket()
-            got_it = receive_ack_socket.receive()
+            if segment == 'FIM':
+                socket_envio.send('#')
+            else:
+                # Adicionar ruido ao quadro
+                # if random.randrange(0, 1):
+                #     print('---houve ruido----')
+                #     frame_str = Fisica.add_noise(frame_str)
 
-            print(got_it)
+                # ENVIA!!!
+                print('FRAME:    ', frame_str)
+                socket_envio.send(frame_str)
+
+                print('FRAME ENVIADO')
+
+                receive_ack_socket = MySocketTCP()
+                got_it = receive_ack_socket.receive()
+
+                print('ACK RECEBIDO')

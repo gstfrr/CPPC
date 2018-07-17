@@ -6,9 +6,9 @@ HOST_SOURCE = '127.0.0.1'
 
 
 def main():
-    usuario = User(HOST_SOURCE)
+    server = User(HOST_SOURCE)
 
-    usuario.receive_message()
+    server.receive_message()
 
 
 if __name__ == '__main__':
