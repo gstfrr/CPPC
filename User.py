@@ -3,7 +3,7 @@ import math
 
 
 class User:
-    __MAX_SIZE_BITS = 127
+    __MAX_SIZE_BITS = 63
 
     # __MAX_SIZE_BITS = 255
 

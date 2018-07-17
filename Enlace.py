@@ -110,7 +110,8 @@ class Enlace:
                 socket_envio.send('#')
             else:
                 # Adicionar ruido ao quadro
-                # if random.randrange(0, 1):
+                # corrompe = random.randrange(0, 2)
+                # if corrompe == 1:
                 #     print('---houve ruido----')
                 #     frame_str = Fisica.add_noise(frame_str)
 
